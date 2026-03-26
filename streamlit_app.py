@@ -534,18 +534,21 @@ def generate_excel_report(df, stats):
 
 def download_chinese_font():
     font_dir = tempfile.gettempdir()
-    font_file = os.path.join(font_dir, "NotoSansSC-Regular.otf")
-    if not os.path.exists(font_file) or os.path.getsize(font_file) < 1000000:
+    font_file = os.path.join(font_dir, "SimHei.ttf")
+    if not os.path.exists(font_file) or os.path.getsize(font_file) < 5000000:
         font_urls = [
-            "https://github.com/googlefonts/noto-cjk/raw/main/Sans/OTF/SimplifiedChinese/NotoSansSC-Regular.otf",
-            "https://mirrors.tuna.tsinghua.edu.cn/github-release/googlefonts/noto-cjk/LatestRelease/OTF/SimplifiedChinese/NotoSansSC-Regular.otf",
+            "https://raw.githubusercontent.com/StellarCN/scp_zh/master/fonts/SimHei.ttf",
+            "https://github.com/dolbydu/font/raw/master/SimHei.ttf",
         ]
         for url in font_urls:
             try:
-                urllib.request.urlretrieve(url, font_file)
-                if os.path.getsize(font_file) > 1000000:
+                req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+                with urllib.request.urlopen(req) as response:
+                    with open(font_file, 'wb') as f:
+                        f.write(response.read())
+                if os.path.getsize(font_file) > 5000000:
                     break
-            except:
+            except Exception as e:
                 continue
     return font_file
 
